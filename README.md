@@ -15,6 +15,16 @@ The site visualizes participant progress, completed challenges, rankings, and sc
 * Static GitHub Pages deployment
 * No backend, database, or API keys required
 
+## Default Ranking
+
+1. Participants who have completed all challenges are ranked ahead of participants who have not.
+2. Among participants who have completed all challenges, rank by **Completion Time ascending** — the person who completed all challenges first ranks highest.
+3. Among participants who have not completed all challenges, rank by **Total Score descending**.
+4. Then by **number of completed tasks descending**.
+5. Finally by **participant name alphabetically** for deterministic tie-breaking.
+
+Completion time should only affect ranking after a participant has completed all required challenges. Empty or malformed completion times must not cause errors.
+
 ## Data
 
 Leaderboard data is read from CSV files stored in the repository using the naming convention:
