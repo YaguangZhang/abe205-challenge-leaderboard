@@ -129,6 +129,10 @@ The workflow prepares the latest leaderboard data, validates the project, and de
 Purdue University
 Instructor: [Dr. Yaguang Zhang](https://yaguangzhang.github.io/)
 
+## Development Note
+
+This leaderboard application was developed with assistance from ChatGPT by OpenAI.
+
 ## License
 
 Source code is available under the [MIT License](LICENSE).
