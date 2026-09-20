@@ -26,7 +26,7 @@ class AssetParser(HTMLParser):
 
 def validate(root=ROOT):
     site = Path(root) / "site"
-    for relative in ["index.html", "styles.css", "app.js", "assets/favicon.svg", "data/leaderboard.json"]:
+    for relative in ["index.html", "styles.css", "themes.css", "themes.js", "app.js", "assets/favicon.svg", "data/leaderboard.json"]:
         path = site / relative
         if not path.is_file() or not path.stat().st_size:
             raise ValueError(f"Missing or empty asset: {relative}")
@@ -52,7 +52,7 @@ def validate(root=ROOT):
             raise ValueError("Generated task counts are inconsistent")
         if len(participant["bonusTasks"]) != meta["bonusTaskCount"] or sum(participant["bonusTasks"]) != participant["completedBonusTasks"]:
             raise ValueError("Generated bonus counts are inconsistent")
-    public_files = {"index.html", "styles.css", "app.js", "assets/favicon.svg", "data/leaderboard.json", "data/.gitkeep", ".nojekyll"}
+    public_files = {"index.html", "styles.css", "themes.css", "themes.js", "app.js", "assets/favicon.svg", "data/leaderboard.json", "data/.gitkeep", ".nojekyll"}
     for path in site.rglob("*"):
         if path.is_symlink() or (path.is_file() and path.relative_to(site).as_posix() not in public_files):
             raise ValueError(f"Unexpected public artifact: {path.relative_to(site)}")

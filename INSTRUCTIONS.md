@@ -1,6 +1,6 @@
 # ABE 205 · Course Challenge Leaderboard
 
-A static, gold-and-black course challenge leaderboard for Purdue **ABE 205: Computations for Engineering Systems**, led by Professor Yaguang Zhang. Names and scores take center stage. Search a participant, open their focus panel, and explore their progress through unnamed milestones.
+A static course challenge leaderboard for Purdue **ABE 205: Computations for Engineering Systems**, led by Professor Yaguang Zhang. Names and scores take center stage. Search a participant, open their focus panel, and explore their progress through unnamed milestones. Eight themes share the same interface, including the original gold-and-black Purdue design.
 
 **Python 3.10+ is the only local prerequisite.** There are no packages to install, API keys, logins, external fonts, frontend frameworks, or production servers. The latest source roster is included as `Participants_20260917.csv`, unchanged from the repository.
 
@@ -21,6 +21,14 @@ python scripts/dev.py --port 8080
 ```
 
 Do not open `index.html` with `file://`: the page fetches its JSON over HTTP. The development server binds to loopback by default. To test on a phone on your own network, use `--host 0.0.0.0` and open your computer's LAN address and chosen port.
+
+## Select a visual theme
+
+The labeled dropdown in the masthead offers Arcade, Festival, Glass / Futuristic, Minimal, Neon, Purdue, Retro, and Sports Broadcast. On narrow screens it occupies its own row below the brand. “ABE 205:” now prefixes the course subtitle.
+
+`themes.js` runs in the document head before the stylesheets and chooses a random theme. A manual choice lasts until the next visit. Normal reloads rerun the script; a `pageshow` event with `persisted: true` rerolls when browser back/forward navigation restores a cached document. Ordinary `pageshow`, tab switches, and leaderboard interactions retain the active choice. Every visit is an independent random draw, so repeats are possible. No storage, cookies, URL state, or preference APIs are used.
+
+Themes change CSS tokens and decoration only. The theme controller never reads or modifies participant data, sorting, search, selected participants, progress values, or dialog navigation. Purdue defaults live in `styles.css`; other themes live in `themes.css`. The selector updates the root `data-theme` attribute and browser theme color, then announces manual changes to assistive technology. System font stacks, visible focus indicators, native dropdown keyboard support, reduced-motion rules, and a solid fallback for glass panels require no additional dependencies.
 
 ## Add or update a roster
 
@@ -78,6 +86,14 @@ All data tests use Python's standard library and isolated fixtures, so updating 
 python -m unittest discover -s tests -v
 ```
 
+Theme-controller tests can also be run with Node 18+ (optional for contributors; no packages to install):
+
+```bash
+node --test tests/test_themes.cjs
+```
+
+They exercise initial random choice, all eight manual selections, reloads, browser form restoration, back/forward cache returns, and unchanged themes during tab switches. The fixture rejects storage access, timers, data requests, and access to leaderboard elements. Python remains the only build/serve prerequisite; the existing Pages workflow is unchanged.
+
 Build the current roster and validate the public files:
 
 ```bash
@@ -88,6 +104,8 @@ python scripts/validate_site.py
 The tests cover date selection independent of modification times, invalid filenames, Unicode and quoted names, dynamic required/bonus tasks, unchanged supplied scores, the 200-point cap, percentage display conversion, ranking, malformed values, validated cap configuration, omitted private fields, and stale-output cleanup. The site validator checks generated data, required/bonus counts, required files, relative asset paths, and the public artifact allowlist. If adding assets, update that allowlist in `scripts/validate_site.py`.
 
 For a quick manual UI check: search `Paisley`, confirm the bonus badge, then open the row and check 20 / 200, 10% score progress, five pending required milestones, and one completed optional bonus. Check John Holland's 30 / 200 and 15%, and a participant without bonus completion for the outlined pending star. Search `aaron` to check accent-insensitive matching, then clear the search. Tab and Enter work on rows, Escape closes the panel, and native dialog focus stays inside until closed. Check the card layout at a narrow viewport and the browser's reduced-motion setting.
+
+Check each of the eight theme options at desktop and phone widths, including the focus panel. Confirm that switching themes leaves an active search and selected participant intact. Reload several times to observe fresh choices, navigate away and back, and switch tabs to confirm the theme remains stable within a visit. Check the theme dropdown with the keyboard and inspect both pending and completed milestones in the light themes.
 
 ## Deploy to GitHub Pages
 
@@ -125,10 +143,13 @@ The public page exposes participant names, scores, ranks, progress, and task com
 | `site/index.html` | Semantic interface, row template, and native focus dialog |
 | `site/styles.css` | Responsive design, focus states, and reduced-motion support |
 | `site/app.js` | JSON validation, safe rendering, search, and participant selection |
+| `site/themes.js` | Random per-visit theme selection, manual changes, and cached-page returns |
+| `site/themes.css` | Eight visual treatments sharing the base layout and controls |
 | `site/assets/favicon.svg` | Self-contained course leaderboard icon |
 | `site/data/leaderboard.json` | Generated output; ignored by Git and rebuilt for development/deployment |
 | `site/data/.gitkeep`, `site/.nojekyll` | Keep the output directory and static-site marker |
 | `tests/test_prepare_data.py` | Dependency-free regression tests |
+| `tests/test_themes.cjs` | Optional Node standard-library theme-controller tests |
 | `.github/workflows/deploy-pages.yml` | Validation and official GitHub Pages deployment |
 
 The frontend uses system fonts and a simple computation-inspired icon, without externally loaded imagery or Purdue logo assets.

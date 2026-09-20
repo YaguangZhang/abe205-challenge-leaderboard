@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="purdue">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,9 @@
   <meta name="description" content="Participant rankings and course challenge progress for Purdue ABE 205: Computations for Engineering Systems.">
   <title>Course Challenge Leaderboard · ABE 205</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <script src="./themes.js"></script>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./themes.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
@@ -17,15 +19,29 @@
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="brand-name">PURDUE <span>ENGINEERING</span></span>
     </a>
-    <span class="course-tag">ABE <strong>205</strong></span>
+    <div class="theme-control">
+      <label for="theme-select">Theme</label>
+      <select id="theme-select" aria-describedby="theme-help" autocomplete="off" disabled>
+        <option value="arcade">Arcade</option>
+        <option value="festival">Festival</option>
+        <option value="glass">Glass / Futuristic</option>
+        <option value="minimal">Minimal</option>
+        <option value="neon">Neon</option>
+        <option value="purdue" selected>Purdue</option>
+        <option value="retro">Retro</option>
+        <option value="sports">Sports Broadcast</option>
+      </select>
+      <span id="theme-help" class="sr-only">Choose a style for this visit. A random style is chosen when you reload or return to this page.</span>
+      <span id="theme-status" class="sr-only" role="status" aria-live="polite"></span>
+    </div>
   </header>
 
   <main class="shell">
     <section class="intro" aria-labelledby="page-title">
       <div>
-        <p class="eyebrow">Computations for Engineering Systems</p>
+        <p class="eyebrow">ABE 205: Computations for Engineering Systems</p>
         <h1 id="page-title">Course Challenge<br><span>Leaderboard</span></h1>
-        <p class="instructor">Professor Yaguang Zhang</p>
+        <p class="instructor"><a href="http://yaguangzhang.github.io/">Professor Yaguang Zhang</a></p>
       </div>
       <dl class="summary" aria-label="Course overview">
         <div><dt>Participants</dt><dd id="participant-count">—</dd></div>

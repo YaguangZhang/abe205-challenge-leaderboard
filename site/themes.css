@@ -1,0 +1,355 @@
+/* Theme decoration only. All themes share styles.css, the same DOM, and app.js.
+   Purdue is the base design; no external fonts, images, or theme libraries. */
+
+:root:where([data-theme]:not([data-theme="purdue"])) {
+  --control-bg: var(--surface-raised);
+  --control-line: var(--line);
+  --heading-bg: var(--surface-raised);
+  --row-line: var(--line);
+  --hover-bg: var(--wash);
+  --selected-bg: var(--wash-strong);
+  --leader-bg: linear-gradient(100deg, var(--wash), transparent 85%);
+  --leader-hover: var(--wash-strong);
+  --second-bg: var(--surface-raised);
+  --second-line: var(--line);
+  --second-ink: var(--text);
+  --third-bg: var(--wash);
+  --third-line: var(--accent);
+  --third-ink: var(--accent-strong);
+  --bonus-line: var(--accent);
+  --bonus-bg: var(--wash);
+  --detail-text: var(--muted);
+  --arrow: var(--muted);
+  --dialog-bg: var(--surface);
+  --dialog-line: var(--line);
+  --backdrop: #0a122780;
+  --icon-line: var(--line);
+  --icon-hover: var(--wash);
+  --milestone-line: var(--line);
+  --milestone-bg: var(--surface-raised);
+  --milestone-text: var(--muted);
+  --completed-bg: var(--wash);
+  --optional-line: var(--line);
+  --bonus-pending-line: var(--muted);
+  --bonus-completed-bg: var(--wash);
+}
+
+:where([data-theme]:not([data-theme="purdue"])) .intro::after { background-image: none; }
+:where([data-theme]:not([data-theme="purdue"])) .top-1 .rank-badge { box-shadow: none; }
+
+/* ARCADE — a bold cabinet, candy colors, chunky controls, segmented meters. */
+:root[data-theme="arcade"] {
+  color-scheme: dark;
+  --bg: #201034;
+  --surface: #2a1942;
+  --surface-raised: #211334;
+  --text: #fff7ff;
+  --muted: #cabcd9;
+  --line: #65507c;
+  --accent: #c2f66b;
+  --accent-strong: #d2ff8b;
+  --accent-ink: #172307;
+  --wash: #c2f66b0d;
+  --wash-strong: #c2f66b1d;
+  --track-bg: #534060;
+  --body-font: "Trebuchet MS", Verdana, sans-serif;
+  --heading-font: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+}
+[data-theme="arcade"] body { background-image: radial-gradient(#71518b55 1px, transparent 1px), radial-gradient(ellipse at 90% 0%, #742a69, transparent 60%); background-size: 18px 18px, 100% 700px; background-repeat: repeat, no-repeat; }
+[data-theme="arcade"] .masthead { border-bottom: 3px solid #f579cb; }
+[data-theme="arcade"] .brand-mark { transform: none; gap: 3px; }
+[data-theme="arcade"] .brand-mark i:nth-child(2) { background: #f579cb; }
+[data-theme="arcade"] .brand-mark i:nth-child(3) { background: #8cbfff; }
+[data-theme="arcade"] h1 { font-weight: 900; text-shadow: 3px 3px 0 #94196a; }
+[data-theme="arcade"] h1 span { text-shadow: 3px 3px 0 #315c18; }
+[data-theme="arcade"] .summary dd { color: var(--accent); font-weight: 700; text-shadow: 2px 2px #090415; }
+[data-theme="arcade"] .leaderboard { border: 2px solid #ae85ca; border-top: 7px solid #f579cb; border-radius: 14px; box-shadow: 8px 8px 0 #100719; }
+[data-theme="arcade"] .board-heading h2 { font-weight: 900; }
+[data-theme="arcade"] .search, [data-theme="arcade"] .theme-control select { border-width: 2px; border-radius: 7px; box-shadow: 3px 3px 0 #100719; }
+[data-theme="arcade"] .rank-badge { border-radius: 4px; font-weight: 700; }
+[data-theme="arcade"] .top-1 .rank-badge { box-shadow: 3px 3px 0 #5c7e2f; }
+[data-theme="arcade"] .bonus-badge { border-radius: 3px; border-color: #f579cb; color: #ffb5e8; background: #f579cb12; }
+[data-theme="arcade"] .progress-track { height: 8px; border-radius: 2px; }
+[data-theme="arcade"] .progress-track > span { border-radius: 0; background: repeating-linear-gradient(90deg, var(--accent) 0 9px, #587b2a 9px 12px); }
+[data-theme="arcade"] .focus-track { height: 12px; }
+[data-theme="arcade"] .icon-button, [data-theme="arcade"] .milestones li { border-width: 2px; border-radius: 8px; }
+[data-theme="arcade"] .focus-dialog { border-left: 3px solid #f579cb; box-shadow: -8px 0 #100719; }
+
+/* FESTIVAL — confetti, warm paper, rounded tickets, and cheerful hard shadows. */
+:root[data-theme="festival"] {
+  color-scheme: light;
+  --bg: #fff7eb;
+  --surface: #fffcf7;
+  --surface-raised: #fff0dc;
+  --text: #412239;
+  --muted: #75546a;
+  --line: #d8b9bd;
+  --accent: #a82761;
+  --accent-strong: #982054;
+  --accent-ink: #ffffff;
+  --wash: #ffe7ed;
+  --wash-strong: #ffdaeb;
+  --track-bg: #ead7d7;
+  --body-font: "Trebuchet MS", Verdana, sans-serif;
+  --heading-font: Georgia, "Times New Roman", serif;
+}
+[data-theme="festival"] body { background-image: radial-gradient(ellipse at 0% 0%, #ffd66b66, transparent 50%), radial-gradient(ellipse at 100% 0%, #ffb1d488, transparent 50%), radial-gradient(#1a8e8730 1.4px, transparent 1.4px); background-size: 100% 800px, 100% 800px, 34px 34px; background-repeat: no-repeat, no-repeat, repeat; }
+[data-theme="festival"] .masthead { border-bottom: 2px dashed #c36c92; }
+[data-theme="festival"] .brand-mark i { border-radius: 5px 5px 0 0; }
+[data-theme="festival"] .brand-mark i:nth-child(2) { background: #087d76; }
+[data-theme="festival"] .brand-mark i:nth-child(3) { background: #d5810d; }
+[data-theme="festival"] h1 { font-weight: 700; font-style: italic; letter-spacing: -.055em; text-shadow: 3px 3px #ffdb77; }
+[data-theme="festival"] h1 span { text-decoration: underline wavy #e6a443 2px; text-underline-offset: 8px; }
+[data-theme="festival"] .summary dd { font-family: var(--body-font); font-weight: 900; letter-spacing: -.04em; }
+[data-theme="festival"] .summary div:nth-child(2) dd { color: #006f69; }
+[data-theme="festival"] .leaderboard { border: 2px solid #63354e; border-radius: 24px; box-shadow: 7px 7px 0 #efb93f; }
+[data-theme="festival"] .board-toolbar { background: linear-gradient(110deg, #ffdd80, #ffbedd); }
+[data-theme="festival"] .board-heading h2 { font-weight: 700; font-style: italic; }
+[data-theme="festival"] .board-heading p { color: #614057; }
+[data-theme="festival"] .column-headings { border-block-style: dashed; }
+[data-theme="festival"] .search, [data-theme="festival"] .theme-control select { background: #fffdf8; border: 2px solid #9e6082; border-radius: 24px; }
+[data-theme="festival"] .participant-item:nth-child(even) { background: #fff2f7; }
+[data-theme="festival"] .rank-badge { border-radius: 50%; font-weight: 700; }
+[data-theme="festival"] .top-1 .rank-badge { box-shadow: 2px 3px 0 #efb93f; }
+[data-theme="festival"] .bonus-badge { border-radius: 20px; border-style: dashed; }
+[data-theme="festival"] .progress-track { height: 7px; }
+[data-theme="festival"] .progress-track > span { background: linear-gradient(90deg, #a82761, #06796f); }
+[data-theme="festival"] .focus-track { height: 12px; }
+[data-theme="festival"] .focus-dialog { border-left: 2px solid #9e6082; }
+[data-theme="festival"] .milestones li { border-radius: 13px; }
+[data-theme="festival"] .milestones li.completed { box-shadow: 2px 3px 0 #efb93f; }
+
+/* GLASS / FUTURISTIC — frosted surfaces over soft blue and violet light. */
+:root[data-theme="glass"] {
+  color-scheme: light;
+  --bg: #edf2ff;
+  --surface: #f8faffcc;
+  --surface-raised: #ffffffb8;
+  --text: #1b2c4c;
+  --muted: #51627e;
+  --line: #879dc866;
+  --accent: #3655b8;
+  --accent-strong: #344ab2;
+  --accent-ink: #ffffff;
+  --wash: #547be514;
+  --wash-strong: #547be526;
+  --track-bg: #c7d3eb;
+  --dialog-bg: #f0f5ffed;
+  --body-font: "Segoe UI", Arial, sans-serif;
+  --heading-font: "Segoe UI", Arial, sans-serif;
+}
+[data-theme="glass"] body { background-image: radial-gradient(ellipse at 5% 5%, #afd5ff, transparent 48%), radial-gradient(ellipse at 95% 20%, #d5c2ff, transparent 48%), radial-gradient(ellipse at 40% 80%, #c0eee9, transparent 55%); background-attachment: fixed; }
+[data-theme="glass"] .masthead { border-bottom-color: #ffffff; }
+[data-theme="glass"] h1 { font-weight: 400; letter-spacing: -.06em; }
+[data-theme="glass"] .brand-mark i { background: linear-gradient(#82a8f2, #3655b8); border-radius: 4px; }
+[data-theme="glass"] .summary dd { font-family: var(--body-font); font-weight: 300; letter-spacing: -.055em; }
+[data-theme="glass"] .leaderboard { border: 1px solid #ffffff; border-radius: 24px; background: #f8faffad; backdrop-filter: blur(24px) saturate(130%); box-shadow: 0 20px 80px #374c7929, inset 0 1px #ffffff; }
+[data-theme="glass"] .board-toolbar { background: linear-gradient(100deg, #ffffff66, #ffffff11); }
+[data-theme="glass"] .search, [data-theme="glass"] .theme-control select { border-color: #ffffff; border-radius: 12px; background: #ffffffb8; box-shadow: 0 3px 15px #2436640a; }
+[data-theme="glass"] .theme-control option { background: #f5f8ff; }
+[data-theme="glass"] .rank-badge { border-radius: 12px; }
+[data-theme="glass"] .top-1 .rank-badge { background: linear-gradient(145deg, #5679d7, #344ab2); box-shadow: 0 5px 14px #344ab233; }
+[data-theme="glass"] .bonus-badge { border-color: #93a6da; border-radius: 20px; background: #ffffff88; }
+[data-theme="glass"] .progress-track > span { background: linear-gradient(90deg, #526cce, #377f92); }
+[data-theme="glass"] .focus-dialog { backdrop-filter: blur(24px); border-left-color: #ffffff; box-shadow: -20px 0 80px #223b6026; }
+[data-theme="glass"] .focus-dialog::backdrop { background: #2337614d; backdrop-filter: blur(7px); }
+[data-theme="glass"] .milestones li { border-radius: 14px; box-shadow: inset 0 1px #ffffff; }
+
+/* MINIMAL — quiet editorial typography, fine rules, generous breathing room. */
+:root[data-theme="minimal"] {
+  color-scheme: light;
+  --bg: #fafbfa;
+  --surface: #ffffff;
+  --surface-raised: #f5f7f5;
+  --text: #24332b;
+  --muted: #606b64;
+  --line: #dce2dd;
+  --accent: #3d5949;
+  --accent-strong: #334c3e;
+  --accent-ink: #ffffff;
+  --wash: #f0f5f1;
+  --wash-strong: #e7eee9;
+  --track-bg: #e1e7e2;
+  --body-font: Arial, "Helvetica Neue", sans-serif;
+  --heading-font: Arial, "Helvetica Neue", sans-serif;
+}
+[data-theme="minimal"] .intro::after { content: none; }
+[data-theme="minimal"] .brand-mark { transform: none; gap: 5px; }
+[data-theme="minimal"] .brand-mark i { width: 5px; }
+[data-theme="minimal"] h1 { font-weight: 400; letter-spacing: -.06em; line-height: 1.1; }
+[data-theme="minimal"] h1 span { color: var(--muted); }
+[data-theme="minimal"] .eyebrow { text-transform: none; letter-spacing: .02em; font-family: var(--body-font); }
+[data-theme="minimal"] .summary dd { font-family: var(--body-font); font-weight: 400; letter-spacing: -.04em; }
+[data-theme="minimal"] .leaderboard { border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 0; }
+[data-theme="minimal"] .board-toolbar { padding-block: 32px; }
+[data-theme="minimal"] .board-heading h2 { font-weight: 500; }
+[data-theme="minimal"] .search, [data-theme="minimal"] .theme-control select { border-radius: 3px; background: #ffffff; }
+[data-theme="minimal"] .column-headings { background: transparent; font-family: var(--body-font); text-transform: none; letter-spacing: .01em; }
+[data-theme="minimal"] .participant-name { font-weight: 500; }
+[data-theme="minimal"] .rank-badge { border-radius: 2px; }
+[data-theme="minimal"] .top-1 .rank-badge { background: var(--wash-strong); color: var(--accent); border-color: var(--line); }
+[data-theme="minimal"] .top-3 .rank-badge { background: var(--surface); border-color: var(--line); color: var(--text); }
+[data-theme="minimal"] .bonus-badge { border-color: var(--line); background: transparent; border-radius: 3px; }
+[data-theme="minimal"] .progress-track { height: 3px; }
+[data-theme="minimal"] .focus-track { height: 8px; min-height: 8px; }
+[data-theme="minimal"] .score-cell strong { font-weight: 400; }
+[data-theme="minimal"] .focus-dialog { box-shadow: -15px 0 60px #17291b14; }
+[data-theme="minimal"] .milestones li, [data-theme="minimal"] .bonus-milestone { border-radius: 3px; }
+@media (min-width: 601px) { [data-theme="minimal"] .participant { min-height: 102px; } }
+
+/* NEON — a dark technical grid, luminous edges, cyan and magenta highlights. */
+:root[data-theme="neon"] {
+  color-scheme: dark;
+  --bg: #080b17;
+  --surface: #101627;
+  --surface-raised: #0b1020;
+  --text: #e7f8ff;
+  --muted: #a3b6cd;
+  --line: #275361;
+  --accent: #6af5e7;
+  --accent-strong: #91fff1;
+  --accent-ink: #092523;
+  --wash: #6af5e709;
+  --wash-strong: #6af5e718;
+  --track-bg: #243d49;
+  --heading-font: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --body-font: "Segoe UI", Arial, sans-serif;
+}
+[data-theme="neon"] body { background-image: linear-gradient(#6af5e707 1px, transparent 1px), linear-gradient(90deg, #6af5e707 1px, transparent 1px), radial-gradient(ellipse at 85% 0%, #5c205759, transparent 60%); background-size: 40px 40px, 40px 40px, 100% 800px; background-repeat: repeat, repeat, no-repeat; }
+[data-theme="neon"] .masthead { border-bottom-color: #6af5e766; box-shadow: 0 1px 12px #6af5e712; }
+[data-theme="neon"] .brand-mark i { box-shadow: 0 0 10px #6af5e755; }
+[data-theme="neon"] h1 { font-weight: 700; font-size: clamp(2.2rem, 4vw, 3.5rem); letter-spacing: -.075em; text-shadow: 0 0 25px #6af5e74d; }
+[data-theme="neon"] h1 span { color: #ff86d5; text-shadow: 0 0 22px #fa4bbc66; }
+[data-theme="neon"] .summary dd { text-shadow: 0 0 16px #6af5e755; }
+[data-theme="neon"] .leaderboard { border-color: #6af5e77a; border-radius: 3px; box-shadow: 0 0 0 4px #6af5e705, 0 0 35px #6af5e70a; }
+[data-theme="neon"] .board-toolbar { border-top: 2px solid #ff86d5; }
+[data-theme="neon"] .search, [data-theme="neon"] .theme-control select { border-radius: 2px; }
+[data-theme="neon"] .search:focus-within { box-shadow: 0 0 14px #6af5e71a; }
+[data-theme="neon"] .rank-badge { border-radius: 1px; }
+[data-theme="neon"] .top-1 .rank-badge { box-shadow: 0 0 18px #6af5e733; }
+[data-theme="neon"] .bonus-badge { color: #ff9bdd; border-color: #b85893; background: #ff86d50a; border-radius: 2px; }
+[data-theme="neon"] .progress-track { height: 6px; box-shadow: 0 0 8px #6af5e712; }
+[data-theme="neon"] .progress-track > span { background: linear-gradient(90deg, #2fb4c3, #6af5e7); }
+[data-theme="neon"] .focus-track { height: 12px; }
+[data-theme="neon"] .focus-dialog { border-left-color: var(--accent); box-shadow: -2px 0 30px #6af5e712; }
+[data-theme="neon"] .milestones li, [data-theme="neon"] .bonus-milestone { border-radius: 2px; }
+[data-theme="neon"] .milestones li.completed { box-shadow: inset 0 0 16px #6af5e711; }
+
+/* PURDUE — styles.css retains the original gold-and-black treatment. */
+:root[data-theme="purdue"] { color-scheme: dark; }
+
+/* RETRO — printed scorecards, typewriter numerals, pixel-like edges and stripes. */
+:root[data-theme="retro"] {
+  color-scheme: light;
+  --bg: #efe5ce;
+  --surface: #f7efd9;
+  --surface-raised: #e9ddc0;
+  --text: #283d35;
+  --muted: #58604f;
+  --line: #aaa489;
+  --accent: #9c3e27;
+  --accent-strong: #883520;
+  --accent-ink: #fff5de;
+  --wash: #eee1c5;
+  --wash-strong: #e8d4af;
+  --track-bg: #cfc6a7;
+  --body-font: "Courier New", Courier, monospace;
+  --heading-font: "Courier New", Courier, monospace;
+  --mono: "Courier New", Courier, monospace;
+}
+[data-theme="retro"] body { background-image: repeating-linear-gradient(0deg, #283d3506 0 1px, transparent 1px 4px); }
+[data-theme="retro"] .masthead { border-bottom: 5px double #526455; }
+[data-theme="retro"] .brand-mark { transform: none; }
+[data-theme="retro"] .brand-mark i:nth-child(2) { background: #b28a27; }
+[data-theme="retro"] .brand-mark i:nth-child(3) { background: #426354; }
+[data-theme="retro"] h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 700; letter-spacing: -.08em; text-shadow: 2px 2px #ffffff; }
+[data-theme="retro"] .eyebrow { font-weight: 700; letter-spacing: .04em; }
+[data-theme="retro"] .summary dd { font-weight: 700; }
+[data-theme="retro"] .leaderboard { border: 2px solid #526455; border-radius: 0; box-shadow: 6px 6px 0 #526455; }
+[data-theme="retro"] .board-toolbar { border-top: 7px solid #9c3e27; background: repeating-linear-gradient(0deg, #283d3505 0 1px, transparent 1px 3px); }
+[data-theme="retro"] .board-heading h2 { letter-spacing: -.06em; font-weight: 700; }
+[data-theme="retro"] .column-headings { border-block: 2px solid #526455; letter-spacing: 0; font-weight: 700; }
+[data-theme="retro"] .search, [data-theme="retro"] .theme-control select { border: 2px solid #526455; border-radius: 0; box-shadow: 2px 2px 0 #c6b48d; }
+[data-theme="retro"] .participant-item { border-bottom-style: dashed; }
+[data-theme="retro"] .rank-badge { border-radius: 0; font-weight: 700; }
+[data-theme="retro"] .top-1 .rank-badge { background-image: radial-gradient(#ffffff22 .6px, transparent .6px); background-size: 3px 3px; box-shadow: 2px 2px #526455; }
+[data-theme="retro"] .bonus-badge { border-radius: 0; border-style: dashed; font-weight: 700; }
+[data-theme="retro"] .progress-track { border: 1px solid #aaa489; border-radius: 0; height: 9px; }
+[data-theme="retro"] .progress-track > span { border-radius: 0; background: repeating-linear-gradient(90deg, #426354 0 6px, #77907c 6px 8px); }
+[data-theme="retro"] .focus-track { height: 14px; }
+[data-theme="retro"] .score-cell strong { font-weight: 700; letter-spacing: -.08em; }
+[data-theme="retro"] .focus-dialog { border-left: 4px double #526455; }
+[data-theme="retro"] .icon-button, [data-theme="retro"] .milestones li, [data-theme="retro"] .bonus-milestone, [data-theme="retro"] .focus-rank span:first-child, [data-theme="retro"] .optional-label { border-radius: 0; }
+
+/* SPORTS BROADCAST — a navy studio bar, strong condensed type, red/blue graphics. */
+:root[data-theme="sports"] {
+  color-scheme: light;
+  --bg: #e9eef5;
+  --surface: #ffffff;
+  --surface-raised: #f0f4f9;
+  --text: #142c47;
+  --muted: #52657c;
+  --line: #c1ccda;
+  --accent: #084c9e;
+  --accent-strong: #084588;
+  --accent-ink: #ffffff;
+  --wash: #e9f1fc;
+  --wash-strong: #dce9f9;
+  --track-bg: #cbd6e5;
+  --body-font: Arial, "Helvetica Neue", sans-serif;
+  --heading-font: Impact, "Arial Narrow", "Franklin Gothic Medium", sans-serif;
+}
+[data-theme="sports"] body { background-image: repeating-linear-gradient(125deg, #17345804 0 30px, transparent 30px 60px); }
+[data-theme="sports"] .masthead { border-bottom: 4px solid #142c47; }
+[data-theme="sports"] .brand-mark { transform: skew(-16deg); }
+[data-theme="sports"] .brand-mark i:nth-child(3) { background: #c42c43; }
+[data-theme="sports"] h1 { font-weight: 700; text-transform: uppercase; letter-spacing: -.025em; line-height: 1; }
+[data-theme="sports"] h1 span { color: #b62339; }
+[data-theme="sports"] .eyebrow { font-family: var(--body-font); font-weight: 800; letter-spacing: .05em; }
+[data-theme="sports"] .summary dd { font-family: var(--heading-font); font-weight: 700; font-style: italic; letter-spacing: -.02em; }
+[data-theme="sports"] .summary div:last-child dd { color: #b62339; }
+[data-theme="sports"] .leaderboard { border: 0; border-radius: 2px; box-shadow: 0 8px 25px #142c4726; }
+[data-theme="sports"] .board-toolbar { border-top: 5px solid #c42c43; background: #142c47; color: #ffffff; }
+[data-theme="sports"] .board-heading h2 { font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
+[data-theme="sports"] .board-heading h2 span { color: #ff6179; }
+[data-theme="sports"] .board-heading p { color: #c3d2e5; }
+[data-theme="sports"] .search { color: var(--text); border: 1px solid #ffffff; border-radius: 2px; background: #ffffff; }
+[data-theme="sports"] .theme-control select { border: 2px solid #142c47; border-radius: 2px; background: #ffffff; font-weight: 700; }
+[data-theme="sports"] .column-headings { color: #ffffff; background: #24496e; border-color: #3d6086; letter-spacing: .04em; font-family: var(--body-font); font-weight: 700; }
+[data-theme="sports"] .participant-item:nth-child(even) { background: #f2f5f9; }
+[data-theme="sports"] .participant-name { font-weight: 700; }
+[data-theme="sports"] .rank-badge { border-radius: 1px; font-family: var(--body-font); font-weight: 800; }
+[data-theme="sports"] .top-1 .rank-badge { background: #b62339; border-color: #b62339; color: #ffffff; }
+[data-theme="sports"] .score-cell strong { font-family: var(--heading-font); font-weight: 700; font-style: italic; letter-spacing: -.02em; }
+[data-theme="sports"] .bonus-badge { border-radius: 2px; font-weight: 700; }
+[data-theme="sports"] .progress-track { height: 7px; border-radius: 0; }
+[data-theme="sports"] .progress-track > span { border-radius: 0; background: linear-gradient(90deg, #084c9e, #3b80c9); }
+[data-theme="sports"] .focus-track { height: 12px; }
+[data-theme="sports"] .focus-dialog { border-left: 4px solid #c42c43; }
+[data-theme="sports"] .focus-score strong { font-family: var(--heading-font); font-style: italic; }
+[data-theme="sports"] .milestones li, [data-theme="sports"] .bonus-milestone { border-radius: 2px; }
+
+/* Keep the established mobile cards and focus drawer across all themes. */
+@media (max-width: 600px) {
+  [data-theme="neon"] h1, [data-theme="retro"] h1 { font-size: clamp(1.7rem, 7.6vw, 2.8rem); }
+  [data-theme="sports"] h1 { font-size: clamp(1.8rem, 8vw, 3rem); }
+  [data-theme="arcade"] .leaderboard, [data-theme="festival"] .leaderboard, [data-theme="retro"] .leaderboard { box-shadow: 4px 4px 0 var(--line); }
+  [data-theme] .focus-dialog { border-left-width: 1px; }
+  [data-theme="minimal"] .board-toolbar { padding-block: 25px; }
+}
+
+/* Retain a solid surface when translucency is undesirable or unavailable. */
+@supports not (backdrop-filter: blur(1px)) {
+  [data-theme="glass"] .leaderboard { background: #f5f8ff; }
+  [data-theme="glass"] .focus-dialog { background: #f0f5ff; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="glass"] .leaderboard, [data-theme="glass"] .focus-dialog { background: #f5f8ff; backdrop-filter: none; }
+}
+@media (forced-colors: active) {
+  [data-theme] body, [data-theme] .board-toolbar { background-image: none; }
+  [data-theme] h1, [data-theme] h1 span, [data-theme] .summary dd { text-shadow: none; }
+  [data-theme] .leaderboard, [data-theme] .rank-badge, [data-theme] .focus-dialog { border: 1px solid CanvasText; box-shadow: none; }
+  [data-theme] .theme-control select { border: 1px solid ButtonText; }
+  [data-theme] .progress-track > span { background: Highlight; }
+}

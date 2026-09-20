@@ -13,6 +13,7 @@ The site visualizes participant progress, completed challenges, rankings, and sc
 * Optional bonus milestones and a star badge for completed bonus activity
 * Participant search and focus view
 * Responsive desktop and mobile design
+* Eight distinctive themes with a dropdown and a fresh random choice each visit
 * Automatic selection of the newest participant CSV
 * Static GitHub Pages deployment
 * No backend, database, or API keys required
@@ -30,6 +31,25 @@ Completion time should only affect ranking after a participant has completed all
 Finishers with unknown times follow finishers with valid times and remain ahead of unfinished participants. Bonus completion does not provide an additional ranking tie-breaker. A 200-point score or 100% score progress does not by itself mean all required tasks are complete.
 
 **Displayed ties:** equal CSV scores share the position of their first appearance in the ordered list, with a small **tie** label. Numbering skips occupied positions, for example **04, 05 · tie, 05 · tie, 07**. These labels do not change any ordering rule above: completion times, required-task counts, and names still decide row order. Ties remain visible in search results and the participant focus panel. The panel's next/previous counter tracks each participant's individual position.
+
+## Themes
+
+Use the **Theme** dropdown at the top right of the header (below the brand on small screens). The course label now reads **ABE 205: Computations for Engineering Systems**.
+
+| Theme | Visual treatment |
+| --- | --- |
+| Arcade | Dark purple cabinet, candy colors, chunky borders, segmented progress bars |
+| Festival | Warm paper, colorful confetti patterns, rounded cards, playful serif headings |
+| Glass / Futuristic | Translucent panels, blue/violet gradients, frosted glass and soft shadows |
+| Minimal | White surfaces, quiet typography, fine rules and more breathing room |
+| Neon | Dark technical grid, cyan/magenta accents and luminous edges |
+| Purdue | Original Purdue-inspired gold-and-black design |
+| Retro | Typewriter typography, vintage paper, square edges and striped meters |
+| Sports Broadcast | Navy studio header, bold scoreboard typography and red/blue graphics |
+
+Each new page load chooses uniformly at random from all eight themes before the page is painted. Manual selection changes the styling immediately and stays active during that visit. Reloading or returning through browser back/forward navigation makes a fresh random choice. Switching tabs, searching, opening a participant, or navigating between participants does not change the theme. An independent random draw can occasionally repeat the previous theme.
+
+Theme state exists only in the current document. The site uses no localStorage, sessionStorage, cookies, URL parameters, or other browser storage for themes. All styles share the same content, data, rankings, layout structure, and controls. The dropdown is keyboard accessible, themes also style the participant panel and error states, and system fonts keep the site self-contained.
 
 ## Data
 
@@ -91,6 +111,14 @@ Run the test suite with:
 python -m unittest discover -s tests
 ```
 
+Optional theme-controller regression tests use Node 18+ with no packages:
+
+```bash
+node --test tests/test_themes.cjs
+```
+
+Node is not required to build or serve the leaderboard.
+
 ## Updating the Leaderboard
 
 1. Export or create the latest participant CSV.
@@ -102,7 +130,7 @@ There is no need to modify the frontend when a newer CSV is added.
 
 ### Applying this update
 
-Copy the extracted project contents into your existing repository, including `.github` and the updated `leaderboard.config.json`. This version also changes the page title to **Course Challenge Leaderboard** and adds shared score ranks. Update the Python scripts and frontend together so the generated data includes the display-rank fields. Keep your newer CSVs if you have added any since this archive was prepared. Then run:
+Copy the extracted project contents into your existing repository, including `.github` and the updated `leaderboard.config.json`. This version includes **Course Challenge Leaderboard**, shared score ranks, the theme dropdown, and the new `site/themes.js` and `site/themes.css` files. Update the Python scripts and frontend together so the generated data includes the display-rank fields and the static validator includes the theme assets. Keep your newer CSVs if you have added any since this archive was prepared. Then run:
 
 ```bash
 python -m unittest discover -s tests
@@ -140,6 +168,8 @@ The workflow prepares the latest leaderboard data, validates the project, and de
 │   ├── index.html
 │   ├── styles.css
 │   ├── app.js
+│   ├── themes.js
+│   ├── themes.css
 │   └── data/
 │       └── leaderboard.json
 ├── tests/
