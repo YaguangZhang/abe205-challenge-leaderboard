@@ -52,10 +52,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, [tabindex="-1"]:focu
 h1 { font-size: clamp(2.75rem, 4.6vw, 4rem); font-weight: 650; line-height: 1.04; letter-spacing: -.045em; margin: 16px 0 18px; }
 h1 span { color: var(--gold); }
 .instructor { color: var(--muted); font-size: .875rem; margin: 0; }
-.summary { display: flex; flex-wrap: wrap; gap: clamp(20px, 3.5vw, 48px); padding-bottom: 2px; margin: 0; }
+.summary { display: flex; flex-wrap: wrap; align-items: flex-start; gap: clamp(20px, 3.5vw, 48px); padding-bottom: 2px; margin: 0; }
 .summary div { display: flex; flex-direction: column-reverse; gap: 8px; }
-.summary dt { color: var(--muted); font-size: .8125rem; }
+.summary dt { color: var(--muted); font-size: .8125rem; line-height: 1.4; }
 .summary dd { margin: 0; font: 400 2.25rem/1.1 var(--mono); letter-spacing: -.07em; }
+.summary-bonus { display: block; color: var(--gold); font: .75rem/1.4 var(--mono); letter-spacing: 0; margin-top: 7px; }
 .summary div:last-child dd { color: var(--gold); }
 
 .leaderboard { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
@@ -82,11 +83,16 @@ h1 span { color: var(--gold); }
 .participant.selected { background: #cfb99116; box-shadow: inset 3px 0 var(--gold); }
 .participant.top-1 { background: linear-gradient(100deg, #cfb99113, transparent 70%); }
 .participant.top-1:hover, .participant.top-1.selected { background: linear-gradient(100deg, #cfb99124, #cfb99106 70%); }
+.rank-cell { display: grid; justify-items: center; gap: 3px; width: 36px; }
 .rank-badge { display: grid; place-items: center; width: 36px; min-height: 36px; color: var(--muted); font: .875rem var(--mono); border: 1px solid transparent; border-radius: 6px; }
+.rank-tie { color: var(--gold); font: .6875rem/1.2 var(--mono); letter-spacing: .04em; }
 .top-1 .rank-badge { background: var(--gold); border-color: var(--gold); color: #181a15; box-shadow: 0 0 20px #cfb99113; font-weight: 700; }
 .top-2 .rank-badge { background: #343832; border-color: #656d60; color: #e0e7d9; }
 .top-3 .rank-badge { background: #332b23; border-color: #706049; color: #dcc6a6; }
-.participant-name { font-size: 1.125rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; white-space: pre-wrap; padding-block: 17px; letter-spacing: -.02em; }
+.participant-details { min-width: 0; padding-block: 17px; }
+.participant-name { display: block; font-size: 1.125rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; white-space: pre-wrap; letter-spacing: -.02em; }
+.bonus-badge { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; margin-top: 6px; padding: 3px 7px; border: 1px solid #665940; border-radius: 4px; background: #cfb9910c; color: var(--gold-bright); font-size: .75rem; line-height: 1.4; }
+.bonus-badge > span:first-child { flex-shrink: 0; }
 .task-number { font: .875rem var(--mono); color: #c2c5bb; white-space: nowrap; }
 .mobile-label { display: none; }
 .progress-cell { display: flex; align-items: center; gap: 15px; }
@@ -138,6 +144,17 @@ h1 span { color: var(--gold); }
 .milestone-legend { display: flex; gap: 25px; color: var(--muted); font-size: .75rem; margin-bottom: 32px; }
 .milestone-legend span { display: flex; align-items: center; gap: 7px; }
 .milestone-legend i { color: var(--gold); font-style: normal; }
+.bonus-section { border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 27px; }
+.optional-label { border: 1px solid #535942; border-radius: 20px; padding: 4px 9px; }
+.bonus-milestones { list-style: none; padding: 0; margin: 15px 0 0; display: grid; gap: 10px; }
+.bonus-milestone { display: flex; align-items: center; gap: 14px; min-height: 74px; padding: 13px 16px; border: 1px dashed #626850; border-radius: 6px; background: #22271e; }
+.bonus-milestone.completed { border-style: solid; border-color: var(--gold); background: #cfb99110; }
+.bonus-star { font-size: 2rem; line-height: 1; flex-shrink: 0; color: var(--muted); }
+.bonus-milestone.completed .bonus-star { color: var(--gold-bright); }
+.bonus-title, .bonus-status { display: block; }
+.bonus-title { font-size: .875rem; line-height: 1.4; }
+.bonus-status { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+.bonus-milestone.completed .bonus-status { color: var(--gold-bright); }
 .completion-message { color: var(--gold-bright); font-size: .875rem; line-height: 1.5; border-left: 2px solid var(--gold); padding-left: 13px; margin: 0 0 24px; }
 .focus-navigation { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 24px; border-top: 1px solid var(--line); margin-top: auto; }
 .focus-navigation > span { color: var(--muted); font: .8125rem var(--mono); }
@@ -158,7 +175,6 @@ h1 span { color: var(--gold); }
 @media (max-width: 780px) {
   .intro { flex-wrap: wrap; gap: 25px; padding: 31px 0; }
   .summary { width: 100%; justify-content: flex-start; gap: 40px; }
-  .summary div { flex-direction: row-reverse; align-items: baseline; gap: 10px; }
   .summary dd { font-size: 1.5rem; }
   .summary dt { font-size: .8125rem; }
   h1 { font-size: 3rem; }
@@ -182,7 +198,7 @@ h1 span { color: var(--gold); }
   .course-tag { font-size: .8125rem; padding: 8px 9px; }
   .intro { padding: 29px 0; gap: 24px; }
   .intro .eyebrow { font-size: .75rem; letter-spacing: .03em; }
-  h1 { font-size: clamp(2.25rem, 10.1vw, 3.5rem); margin-top: 12px; margin-bottom: 13px; }
+  h1 { font-size: clamp(2rem, 8.5vw, 3.5rem); margin-top: 12px; margin-bottom: 13px; }
   .summary { gap: 28px; justify-content: flex-start; }
   .summary div { flex-direction: column-reverse; gap: 5px; }
   .summary dd { font-size: 1.75rem; }
@@ -193,8 +209,10 @@ h1 span { color: var(--gold); }
   .column-headings { display: none; }
   .participant-list { border-top: 1px solid var(--line); }
   .participant { grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 12px; row-gap: 13px; padding: 19px 17px; min-height: 118px; }
-  .rank-badge { grid-column: 1; grid-row: 1; width: 32px; min-height: 32px; font-size: .8125rem; }
-  .participant-name { grid-column: 2; grid-row: 1; padding: 0; font-size: 1.0625rem; }
+  .rank-cell { grid-column: 1; grid-row: 1; width: 32px; }
+  .rank-badge { width: 32px; min-height: 32px; font-size: .8125rem; }
+  .participant-details { grid-column: 2; grid-row: 1; padding: 0; }
+  .participant-name { font-size: 1.0625rem; }
   .score-cell { grid-column: 3; grid-row: 1; }
   .score-cell strong { font-size: 1.5625rem; }
   .score-cell > span { font-size: .75rem; }

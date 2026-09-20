@@ -16,22 +16,35 @@ const validNumber = (value, min, max) => typeof value === "number" && Number.isF
 
 function validateData(data) {
   const meta = data?.metadata;
-  if (data?.schemaVersion !== 1 || !meta || !Number.isInteger(meta.taskCount) || meta.taskCount < 1 ||
+  if (data?.schemaVersion !== 3 || !meta || !Number.isInteger(meta.taskCount) || meta.taskCount < 1 ||
+      !Number.isInteger(meta.bonusTaskCount) || meta.bonusTaskCount < 0 ||
       !validNumber(meta.maxScore, Number.MIN_VALUE, Number.MAX_SAFE_INTEGER) ||
       !Array.isArray(data.participants) || !data.participants.length || meta.participantCount !== data.participants.length) {
     throw new Error("Invalid leaderboard data");
   }
   const ids = new Set();
+  const scoreRanks = new Map();
+  const scoreCounts = new Map();
   for (const [index, participant] of data.participants.entries()) {
     if (typeof participant.id !== "string" || !participant.id || ids.has(participant.id) ||
         typeof participant.name !== "string" || !participant.name.trim() || participant.rank !== index + 1 ||
         !validNumber(participant.score, 0, meta.maxScore) || !validNumber(participant.progress, 0, 100) ||
         !Array.isArray(participant.tasks) || participant.tasks.length !== meta.taskCount ||
         participant.tasks.some((task) => typeof task !== "boolean") ||
-        participant.completedTasks !== participant.tasks.filter(Boolean).length) {
+        participant.completedTasks !== participant.tasks.filter(Boolean).length ||
+        !Array.isArray(participant.bonusTasks) || participant.bonusTasks.length !== meta.bonusTaskCount ||
+        participant.bonusTasks.some((task) => typeof task !== "boolean") ||
+        participant.completedBonusTasks !== participant.bonusTasks.filter(Boolean).length) {
       throw new Error("Invalid participant data");
     }
     ids.add(participant.id);
+    if (!scoreRanks.has(participant.score)) scoreRanks.set(participant.score, index + 1);
+    scoreCounts.set(participant.score, (scoreCounts.get(participant.score) || 0) + 1);
+  }
+  for (const participant of data.participants) {
+    if (participant.displayRank !== scoreRanks.get(participant.score) || participant.tieCount !== scoreCounts.get(participant.score)) {
+      throw new Error("Invalid rank or score tie");
+    }
   }
   return data;
 }
@@ -47,11 +60,17 @@ function renderRows() {
     row.style.setProperty("--index", index);
     button.dataset.id = participant.id;
     button.style.setProperty("--progress", `${participant.progress}%`);
-    if (participant.rank <= 3) button.classList.add(`top-${participant.rank}`);
+    if (participant.displayRank <= 3) button.classList.add(`top-${participant.displayRank}`);
     button.classList.toggle("selected", selectedId === participant.id);
-    button.setAttribute("aria-label", `${participant.name}, rank ${participant.rank}, score ${format(participant.score)} out of ${format(meta.maxScore)}, ${participant.completedTasks} of ${meta.taskCount} tasks completed, ${percent(participant.progress)} progress. Open participant focus.`);
-    $(".rank-badge", row).textContent = String(participant.rank).padStart(2, "0");
+    const bonusDescription = meta.bonusTaskCount ? ` ${participant.completedBonusTasks} of ${meta.bonusTaskCount} optional bonus activities completed.` : "";
+    const tieDescription = participant.tieCount > 1 ? `, tied on score with ${participant.tieCount - 1} other ${participant.tieCount === 2 ? "participant" : "participants"}` : "";
+    button.setAttribute("aria-label", `${participant.name}, rank ${participant.displayRank}${tieDescription}, score ${format(participant.score)} out of ${format(meta.maxScore)}, ${participant.completedTasks} of ${meta.taskCount} required tasks completed, ${percent(participant.progress)} score progress.${bonusDescription} Open participant focus.`);
+    $(".rank-badge", row).textContent = String(participant.displayRank).padStart(2, "0");
+    $(".rank-tie", row).hidden = participant.tieCount === 1;
+    $(".rank-cell", row).title = participant.tieCount > 1 ? `${participant.tieCount} participants share this score. Row order follows the usual tie-breakers.` : `Rank ${participant.displayRank}`;
     $(".participant-name", row).textContent = participant.name;
+    $(".bonus-badge", row).hidden = participant.completedBonusTasks === 0;
+    $(".bonus-badge-label", row).textContent = meta.bonusTaskCount === 1 ? "Bonus completed" : `${participant.completedBonusTasks} bonus completed`;
     $(".task-number", row).textContent = `${participant.completedTasks} / ${meta.taskCount}`;
     $(".progress-number", row).textContent = percent(participant.progress);
     $(".score-cell strong", row).textContent = format(participant.score);
@@ -82,7 +101,8 @@ function focusParticipant(id) {
     button.setAttribute("aria-expanded", String(selected));
   }
   $("#focus-name").textContent = participant.name;
-  $("#focus-rank").textContent = `#${participant.rank}`;
+  $("#focus-rank").textContent = `#${participant.displayRank}`;
+  $("#focus-rank-label").textContent = participant.tieCount > 1 ? `Tied on score · ${participant.tieCount} participants` : "Overall rank";
   $("#focus-score").textContent = format(participant.score);
   $("#focus-max").textContent = `/ ${format(meta.maxScore)}`;
   $("#focus-percent").textContent = percent(participant.progress);
@@ -104,6 +124,27 @@ function focusParticipant(id) {
     return milestone;
   });
   $("#focus-milestones").replaceChildren(...milestones);
+  $("#focus-bonus-section").hidden = meta.bonusTaskCount === 0;
+  const bonusMilestones = participant.bonusTasks.map((done, bonusIndex) => {
+    const milestone = document.createElement("li");
+    milestone.className = "bonus-milestone";
+    milestone.classList.toggle("completed", done);
+    const star = document.createElement("span");
+    star.className = "bonus-star";
+    star.setAttribute("aria-hidden", "true");
+    star.textContent = done ? "★" : "☆";
+    const details = document.createElement("span");
+    const label = document.createElement("span");
+    label.className = "bonus-title";
+    label.textContent = meta.bonusTaskCount === 1 ? "Bonus activity" : `Bonus activity ${bonusIndex + 1}`;
+    const status = document.createElement("span");
+    status.className = "bonus-status";
+    status.textContent = done ? "Completed" : "Not completed";
+    details.append(label, status);
+    milestone.append(star, details);
+    return milestone;
+  });
+  $("#focus-bonus-milestones").replaceChildren(...bonusMilestones);
   $("#completion-message").hidden = participant.progress !== 100;
   $("#previous-participant").disabled = index === 0;
   $("#next-participant").disabled = index === leaderboard.participants.length - 1;
@@ -132,7 +173,9 @@ async function loadLeaderboard() {
     if (!response.ok) throw new Error("Data unavailable");
     leaderboard = validateData(await response.json());
     $("#participant-count").textContent = format(leaderboard.metadata.participantCount);
-    $("#task-count").textContent = String(leaderboard.metadata.taskCount).padStart(2, "0");
+    $("#task-count").textContent = format(leaderboard.metadata.taskCount);
+    $("#bonus-summary").hidden = leaderboard.metadata.bonusTaskCount === 0;
+    $("#bonus-summary").textContent = `+ ${leaderboard.metadata.bonusTaskCount} bonus`;
     $("#max-score").textContent = format(leaderboard.metadata.maxScore);
     searchInput.disabled = false;
     renderRows();

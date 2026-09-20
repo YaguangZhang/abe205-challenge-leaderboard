@@ -1,8 +1,8 @@
-# ABE 205 · Computations Leaderboard
+# ABE 205 · Course Challenge Leaderboard
 
 A static, gold-and-black course challenge leaderboard for Purdue **ABE 205: Computations for Engineering Systems**, led by Professor Yaguang Zhang. Names and scores take center stage. Search a participant, open their focus panel, and explore their progress through unnamed milestones.
 
-**Python 3.10+ is the only local prerequisite.** There are no packages to install, API keys, logins, external fonts, frontend frameworks, or production servers. The supplied roster is included as `Participants_20260912.csv`; its download suffix `(1)` was removed without changing the CSV contents.
+**Python 3.10+ is the only local prerequisite.** There are no packages to install, API keys, logins, external fonts, frontend frameworks, or production servers. The latest source roster is included as `Participants_20260917.csv`, unchanged from the repository.
 
 ## Run locally
 
@@ -41,29 +41,31 @@ Required headers: `Name`, `Total Score`, `Percentage`, and at least one header b
 | --- | --- |
 | `Name` | Preserved display name, including Unicode, spacing, and capitalization |
 | Every `C#…` column | Numeric `1` means completed; `0`, empty, or invalid values mean incomplete |
-| Header suffix `- 50 pts` | A task worth 50 points; task count and maximum score are derived dynamically |
-| `Total Score` | The authoritative score when finite and within `0…maximum` |
+| Every `Bonus - …` column | Optional completion flag, separate from required tasks; bonus prefix matching ignores case |
+| `max_score` in `leaderboard.config.json` | Display/validation cap; currently 200, including bonus work |
+| `Total Score` | The authoritative score when finite and within `0…maximum`; never recalculated or increased by the app |
 | `Percentage` | A fraction: `0.05` → 5%, `0.1` → 10%, `1` → 100% |
 
-**Progress is point-weighted**, not the fraction of tasks completed. In the included roster, Quinn Phelan has 2 / 5 tasks and 20 / 200 points, so progress is 10%. Percentage labels display up to two decimal places.
+**Score progress comes from the CSV's Percentage**, not the fraction of required tasks completed. In the included roster, Paisley has 0 / 5 required tasks, one completed bonus, a supplied score of 20 / 200, and supplied progress of 10%. John Holland has 1 / 5 required tasks, one completed bonus, 30 / 200, and 15%. Percentage labels display up to two decimal places. The application never computes either participant's score or adds bonus points a second time.
 
 Default ranking:
 
-1. Participants who have completed every task rank ahead of unfinished participants. Completion is determined from all dynamically discovered task columns, not from score or percentage.
+1. Participants who have completed every required task rank ahead of unfinished participants. Completion is determined from all dynamically discovered `C#` columns, not from score, percentage, or optional bonus activity.
 2. Finishers rank by **completion time ascending**: the earliest valid `Completion Time (YYYYMMDD-HHMMSS)` ranks highest.
 3. Unfinished participants rank by **total score descending**. Their completion-time values are ignored.
-4. Remaining ties use **completed-task count descending**, then **participant name alphabetically**. Scores do not break ties between finishers.
+4. Remaining ties use **completed required-task count descending**, then **participant name alphabetically**. Scores do not break ties between finishers. Bonus completion is not an additional tie-breaker.
 
 Empty, absent, or malformed completion times are treated as unknown. Finishers with unknown times follow all finishers with valid times, remain ahead of every unfinished participant, and use the same task-count/name tie-breakers. Timestamp parsing requires `YYYYMMDD-HHMMSS` and a valid calendar date and time; surrounding whitespace is ignored. Use one consistent timezone for completion timestamps. Times are used only during preprocessing and are omitted from the generated JSON and interface.
 
-Alphabetical comparison ignores case and accents; exact name spelling resolves any remaining comparison tie. Identical duplicate records retain CSV order. Ranks are sequential, and filtering preserves overall ranks.
+Alphabetical comparison ignores case and accents; exact name spelling resolves any remaining comparison tie. Identical duplicate records retain CSV order.
+
+Displayed rank numbers mark equal **source scores** as ties, without changing the sorted order. Every participant with the same score uses that score's first position in the list: for example, `04, 05 · tie, 05 · tie, 07`. Shared ranks have a small “tie” label and matching focus-panel text. If completion-time ordering separates equal scores, they still share a displayed number; this indicates a score tie, not identical completion times. Search retains the full-roster ranks and tie labels. Internally, `rank` is the unique list position, `displayRank` is the shared number, and `tieCount` is the number of participants with that exact numeric score. Next/previous navigation uses the unique position. Schema version 3 includes these display fields, so update the preparation script and frontend together.
 
 ### Recovery rules
 
-- Task count is the number of `C#` columns, and task order follows the CSV. The UI creates as many milestone indicators as needed.
-- Point suffixes are preferred. If a suffix cannot be parsed, `leaderboard.config.json` supplies **positive point values by numeric task ID**. Its initial fallback is C#1–C#5 → 10, 10, 50, 30, 100. Update this file when changing task weights if you need fallback support. Unknown task IDs without parseable weights fail with an actionable error; the script never guesses a maximum.
-- Invalid, empty, non-finite, negative, or excessive scores are recalculated from completed tasks and their point weights.
-- Invalid or out-of-range percentages are recalculated from score / maximum. Valid source values are retained; inconsistencies produce build warnings.
+- Required task count is the number of `C#` columns. Bonus count is the number of `Bonus - …` columns. Each group's order follows the CSV. Bonus work never increases the required-task denominator or the score cap.
+- The shipped configuration explicitly sets `max_score` to 200. Only if that setting is omitted, the display cap falls back to the sum of required header point values; `fallback_task_points` can supply missing header weights by numeric task ID. Bonus weights are excluded. This fallback never calculates a participant score.
+- Rows with invalid, empty, non-finite, negative, or excessive scores, or invalid/out-of-range percentages, are skipped with a build warning. Fix the source fields rather than expecting the app to infer them. Valid supplied values are retained without comparing them to task-derived totals.
 - Blank-name rows and rows with extra cells are skipped with warnings. Truncated task cells become incomplete. Broken quoting, invalid UTF-8, duplicate/missing headers, or an entirely unusable roster produce a clear build error.
 - A failed preparation removes stale generated JSON locally. A failed GitHub workflow does not deploy; the last successful public deployment remains available.
 - Participant text is rendered with `textContent`. Search ignores case and accents, so `aaron` matches `Aarón`. The UI presents a friendly retry state if JSON cannot be loaded or validated.
@@ -83,9 +85,9 @@ python scripts/prepare_data.py
 python scripts/validate_site.py
 ```
 
-The tests cover date selection independent of modification times, invalid filenames, Unicode and quoted names, dynamic tasks, weighted totals, percentage conversion, ranking, malformed values, validated point fallbacks, omitted private fields, and stale-output cleanup. The site validator checks generated data, required files, relative asset paths, and the public artifact allowlist. If adding assets, update that allowlist in `scripts/validate_site.py`.
+The tests cover date selection independent of modification times, invalid filenames, Unicode and quoted names, dynamic required/bonus tasks, unchanged supplied scores, the 200-point cap, percentage display conversion, ranking, malformed values, validated cap configuration, omitted private fields, and stale-output cleanup. The site validator checks generated data, required/bonus counts, required files, relative asset paths, and the public artifact allowlist. If adding assets, update that allowlist in `scripts/validate_site.py`.
 
-For a quick manual UI check: search `aaron`, clear the search, select Quinn, confirm 20 / 200 and 10% with two checked milestones, navigate to Harold, and press Escape. Tab and Enter work on rows; native dialog focus stays inside the panel until closed. Check the card layout at a narrow viewport and the browser's reduced-motion setting.
+For a quick manual UI check: search `Paisley`, confirm the bonus badge, then open the row and check 20 / 200, 10% score progress, five pending required milestones, and one completed optional bonus. Check John Holland's 30 / 200 and 15%, and a participant without bonus completion for the outlined pending star. Search `aaron` to check accent-insensitive matching, then clear the search. Tab and Enter work on rows, Escape closes the panel, and native dialog focus stays inside until closed. Check the card layout at a narrow viewport and the browser's reduced-motion setting.
 
 ## Deploy to GitHub Pages
 
@@ -115,8 +117,8 @@ The public page exposes participant names, scores, ranks, progress, and task com
 
 | Path | Purpose |
 | --- | --- |
-| `Participants_20260912.csv` | Included source roster; add newer dated CSVs alongside it |
-| `leaderboard.config.json` | Validated fallback point weights |
+| `Participants_20260917.csv` | Included source roster; add newer dated CSVs alongside it |
+| `leaderboard.config.json` | Explicit 200-point cap and optional fallback header weights |
 | `scripts/prepare_data.py` | Select, validate, normalize, rank, and generate JSON |
 | `scripts/dev.py` | Prepare data and start a local HTTP server |
 | `scripts/validate_site.py` | Verify the deployable static artifact |

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101110">
   <meta name="description" content="Participant rankings and course challenge progress for Purdue ABE 205: Computations for Engineering Systems.">
-  <title>Computations Leaderboard · ABE 205</title>
+  <title>Course Challenge Leaderboard · ABE 205</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.js"></script>
@@ -24,13 +24,13 @@
     <section class="intro" aria-labelledby="page-title">
       <div>
         <p class="eyebrow">Computations for Engineering Systems</p>
-        <h1 id="page-title">Computations<br><span>Leaderboard</span></h1>
+        <h1 id="page-title">Course Challenge<br><span>Leaderboard</span></h1>
         <p class="instructor">Professor Yaguang Zhang</p>
       </div>
       <dl class="summary" aria-label="Course overview">
         <div><dt>Participants</dt><dd id="participant-count">—</dd></div>
-        <div><dt>Challenges</dt><dd id="task-count">—</dd></div>
-        <div><dt>Available points</dt><dd id="max-score">—</dd></div>
+        <div><dt>Required tasks<span id="bonus-summary" class="summary-bonus" hidden></span></dt><dd id="task-count">—</dd></div>
+        <div><dt>Maximum points</dt><dd id="max-score">—</dd></div>
       </dl>
     </section>
 
@@ -48,7 +48,7 @@
         </form>
       </div>
       <div class="column-headings row-grid" aria-hidden="true">
-        <span>Rank</span><span>Participant</span><span>Tasks</span><span>Progress</span><span class="score-heading">Total score</span><span></span>
+        <span>Rank</span><span>Participant</span><span>Required tasks</span><span>Score progress</span><span class="score-heading">Total score</span><span></span>
       </div>
       <div id="loading-state" class="state" role="status"><span class="loading-line" aria-hidden="true"></span>Loading the standings…</div>
       <div id="error-state" class="state" role="alert" hidden>
@@ -72,16 +72,20 @@
   <dialog id="focus-dialog" class="focus-dialog" aria-labelledby="focus-name" aria-describedby="focus-description">
     <div class="focus-content">
       <div class="focus-top"><p class="eyebrow">Participant focus</p><button id="close-focus" class="icon-button" type="button" aria-label="Close participant focus" autofocus><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-      <div class="focus-rank"><span id="focus-rank">#1</span><span>Overall rank</span></div>
+      <div class="focus-rank"><span id="focus-rank">#1</span><span id="focus-rank-label">Overall rank</span></div>
       <h2 id="focus-name"></h2>
       <p id="focus-description" class="focus-description">Your course challenge progress, at a glance.</p>
       <div class="focus-score"><span class="eyebrow">Total score</span><p><strong id="focus-score"></strong><span id="focus-max"></span></p></div>
-      <div class="focus-progress-heading"><span>Overall progress</span><strong id="focus-percent"></strong></div>
-      <div id="focus-progress" class="progress-track focus-track" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100"><span></span></div>
-      <div class="milestone-heading"><h3>Milestones</h3><span id="focus-tasks"></span></div>
-      <ul id="focus-milestones" class="milestones" aria-label="Task completion"></ul>
+      <div class="focus-progress-heading"><span>Score progress</span><strong id="focus-percent"></strong></div>
+      <div id="focus-progress" class="progress-track focus-track" role="progressbar" aria-label="Score progress" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+      <div class="milestone-heading"><h3>Required milestones</h3><span id="focus-tasks"></span></div>
+      <ul id="focus-milestones" class="milestones" aria-label="Required task completion"></ul>
       <div class="milestone-legend" aria-hidden="true"><span><i>✓</i>Completed</span><span><i>·</i>Pending</span></div>
-      <p id="completion-message" class="completion-message" hidden>All points earned. Outstanding work.</p>
+      <section id="focus-bonus-section" class="bonus-section" aria-labelledby="bonus-heading" hidden>
+        <div class="milestone-heading"><h3 id="bonus-heading">Bonus</h3><span class="optional-label">Optional</span></div>
+        <ul id="focus-bonus-milestones" class="bonus-milestones" aria-label="Optional bonus completion"></ul>
+      </section>
+      <p id="completion-message" class="completion-message" hidden>Maximum score reached. Outstanding work.</p>
       <div class="focus-navigation"><button id="previous-participant" class="icon-button" type="button" aria-label="Previous participant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><span id="focus-position" role="status" aria-live="polite"></span><button id="next-participant" class="icon-button" type="button" aria-label="Next participant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div>
     </div>
   </dialog>
@@ -89,9 +93,9 @@
   <template id="participant-template">
     <li class="participant-item">
       <button class="participant row-grid" type="button" aria-haspopup="dialog" aria-controls="focus-dialog" aria-expanded="false">
-        <span class="rank-badge" aria-hidden="true"></span>
-        <span class="participant-name"></span>
-        <span class="tasks-cell"><span class="task-number"></span><span class="mobile-label">tasks</span></span>
+        <span class="rank-cell" aria-hidden="true"><span class="rank-badge"></span><span class="rank-tie" hidden>tie</span></span>
+        <span class="participant-details"><span class="participant-name"></span><span class="bonus-badge" hidden><span aria-hidden="true">★</span><span class="bonus-badge-label"></span></span></span>
+        <span class="tasks-cell"><span class="task-number"></span><span class="mobile-label">required</span></span>
         <span class="progress-cell"><span class="progress-track"><span></span></span><span class="progress-number"></span></span>
         <span class="score-cell"><strong></strong><span></span></span>
         <svg class="row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>

@@ -3,6 +3,7 @@
 
 import json
 import sys
+from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -39,11 +40,18 @@ def validate(root=ROOT):
             raise ValueError(f"Asset does not exist: {url}")
     data = json.loads((site / "data/leaderboard.json").read_text(encoding="utf-8"))
     meta = data["metadata"]
-    if data["schemaVersion"] != 1 or meta["participantCount"] != len(data["participants"]) or not data["participants"]:
+    if data["schemaVersion"] != 3 or meta["participantCount"] != len(data["participants"]) or not data["participants"]:
         raise ValueError("Generated roster is empty or inconsistent")
-    for participant in data["participants"]:
+    score_counts = Counter(participant["score"] for participant in data["participants"])
+    score_ranks = {}
+    for position, participant in enumerate(data["participants"], start=1):
+        display_rank = score_ranks.setdefault(participant["score"], position)
+        if participant["rank"] != position or participant["displayRank"] != display_rank or participant["tieCount"] != score_counts[participant["score"]]:
+            raise ValueError("Generated ranks or score ties are inconsistent")
         if len(participant["tasks"]) != meta["taskCount"] or sum(participant["tasks"]) != participant["completedTasks"]:
             raise ValueError("Generated task counts are inconsistent")
+        if len(participant["bonusTasks"]) != meta["bonusTaskCount"] or sum(participant["bonusTasks"]) != participant["completedBonusTasks"]:
+            raise ValueError("Generated bonus counts are inconsistent")
     public_files = {"index.html", "styles.css", "app.js", "assets/favicon.svg", "data/leaderboard.json", "data/.gitkeep", ".nojekyll"}
     for path in site.rglob("*"):
         if path.is_symlink() or (path.is_file() and path.relative_to(site).as_posix() not in public_files):

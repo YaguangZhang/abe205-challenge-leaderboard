@@ -1,4 +1,5 @@
 {
+  "max_score": 200,
   "fallback_task_points": {
     "1": 10,
     "2": 10,
